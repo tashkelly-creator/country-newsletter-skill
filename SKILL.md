@@ -1,17 +1,6 @@
 ---
-name: country-feedback-digest
-description: >
-  Generates and delivers a country feedback digest for Canva country managers, pulling live
-  data from Enterpret. Supports weekly, bi-weekly, and monthly cadences. Delivers a Slack
-  summary, live artifact dashboard (weekly view, month-on-month, peer country comparison),
-  and optional Canva doc archive. Features: SPIKE/WATCH/LOCAL/ELEVATED theme tagging, churn analysis
-  inferred by locale/currency, incidents & rollout cross-referencing, configurable peer
-  benchmarking (up to 10 markets), market-relative spike floor calibrated on first run, and
-  operating plan tie-backs. Use when a country manager wants to set up automated feedback
-  reports or generate a one-off country summary.
-  Trigger phrases: "weekly feedback report for [country]", "set up my weekly digest",
-  "send me the UK feedback summary", "send Indonesia feedback to Slack", "country feedback
-  report", "set up automated insights for [country]", "weekly Enterpret digest".
+name: "country-feedback-digest"
+description: "Generates and delivers a country feedback digest for Canva country managers, pulling live data from Enterpret. Supports weekly, bi-weekly, and monthly cadences. Delivers a Slack summary, live artifact dashboard (weekly view, month-on-month, peer country comparison), and optional Canva doc archive. Features: SPIKE/WATCH/LOCAL/ELEVATED theme tagging, churn analysis inferred by locale/currency, incidents & rollout cross-referencing, configurable peer benchmarking (up to 10 markets), market-relative spike floor calibrated on first run, and operating plan tie-backs. Use when a country manager wants to set up automated feedback reports or generate a one-off country summary. Trigger phrases: \"weekly feedback report for [country]\", \"set up my weekly digest\", \"send me the UK feedback summary\", \"send Indonesia feedback to Slack\", \"country feedback report\", \"set up automated insights for [country]\", \"weekly Enterpret digest\"."
 ---
 
 # Country Feedback Digest
@@ -117,7 +106,7 @@ Once you have cadence and delivery format:
 
 > "One thing worth knowing before we run the first report: **not all Enterpret data sources can be country-filtered** — social sources (Twitter, Reddit, Discord), Play Store, and some FileUpload sources don't have reliable country fields, so they're excluded from your country view. This means the artifact gives you a strong directional read on trends, but it's not the complete picture.
 >
-> For the full dataset — especially when you want to dig into a specific theme, read verbatims, or cross-reference with other markets — **your Enterpret dashboard is the source of truth**. I'll include a direct link to it in every digest so it's always one click away."
+> For the full dataset — especially when you want to dig into a specific theme, read verbatims, or cross-reference with other markets — **your Enterpret dashboard is the source of truth**. I'll keep a direct link to it in your artifact dashboard so it's always one click away."
 
 **Incidents & rollouts — always ON, no opt-out.** Always scan `#rollouts-canva` and `#incident` (C019GKGSGTZ) on every run. Do not ask for permission or offer an opt-out — this runs silently every week. If channels are inaccessible, skip silently without mentioning it.
 
@@ -511,8 +500,6 @@ This callout keeps the data honest and helps country managers understand why the
 
 ---
 
----
-
 ### Query I — Subscription Plan Breakdown per Priority Theme
 
 Run this for each priority theme (top 3–4 by volume) to power the segment pills in the artifact. Use `zendesksupport_subscriptions_clean` — the cleaned, deduplicated subscription field confirmed in production.
@@ -611,12 +598,17 @@ Send **one concise message** — not a data dump. This is the at-a-glance pulse 
 • Churn: [N] responses ([WoW%] WoW) · [dominant plan type]%
 
 🖥️ Full artifact dashboard → [artifact link or "open in Cowork"]
+
 📄 Canva doc → [doc link if generated]
+
 📝 Markdown file → [attached/available in Cowork]
-🔍 Enterpret dashboard → [ENTERPRET_DASHBOARD_URL]
 ```
 
-Keep to 5–7 lines. No tables, no methodology notes. If someone wants more, it's in the artifact or doc.
+**Do NOT include an Enterpret dashboard link in this Slack message.** It used to be a fourth link line here, but it made the message noisier without adding much a country manager needs in a quick pulse check — the artifact's header and source-coverage note already link to the Enterpret dashboard, so it's still one click away for anyone who opens the dashboard. Keep the Slack message limited to the three link types above (whichever the manager opted into).
+
+**Formatting — put a blank line between every link line.** Stacking `emoji → link` lines back-to-back with no blank line between them can cause Slack's auto-linkifier to swallow the trailing newline and the next line's leading emoji into the URL itself, breaking every link in the block. Always separate consecutive link lines with a blank line, as shown above — this holds regardless of how many link types are included.
+
+Keep to 5–7 content lines (not counting the blank spacer lines between links). No tables, no methodology notes. If someone wants more, it's in the artifact or doc.
 
 **Rules for the headline:**
 - Describe only what the data shows — no inferences about root cause unless directly evidenced
@@ -850,6 +842,7 @@ Note daylight saving: UK, AU, and EU change clocks seasonally. Mention this if r
 13. **Plan breakdown pills require Query I** — always run Query I for each priority theme before building the artifact. Only omit if the query returns 0 results for all themes.
 14. **Canva doc archive: never create a new doc on subsequent runs** — always open the stored `canva_doc_archive` ID and prepend. Creating a new doc every week defeats the purpose of the archive and breaks the shared bookmark.
 15. **Canva doc URL: never use `view_url` or `edit_url` from the API** — these are signed short URLs (`canva.com/d/...`) that expire after the session. Always construct the stable permalink as `https://www.canva.com/design/[DESIGN_ID]` using the stored design ID.
+16. **Slack link lines need blank-line spacing** — stacking `emoji → link` lines with no blank line between them can cause Slack's auto-linkifier to swallow the newline and next line's emoji into the URL, breaking every link in the block. Always separate consecutive link lines with a blank line.
 
 ---
 
@@ -858,3 +851,4 @@ Note daylight saving: UK, AU, and EU change clocks seasonally. Mention this if r
 - `references/slack-example.md` — Annotated example of the target Slack output (UK, May 25–31 2026)
 - `references/country-filters.md` — Per-source country field names and known country values
 - `references/country-dashboards.md` — Country-specific Enterpret dashboard URLs. **Look up this file at the start of every run** to resolve `[ENTERPRET_DASHBOARD_URL]` for the current country. If the country is not listed, fall back to the default: `https://dashboard.enterpret.com/canva-design/`
+
